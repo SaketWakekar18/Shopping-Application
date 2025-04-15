@@ -34,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse getProducyById(long productId) {
         logger.info("Fetching product with ID: " + productId);
-        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product with given ID not found"));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product with given ID not found","PRODUCT NOT FOUND"));
         ProductResponse response = new ProductResponse();
 //        response.setProductId(product.getProductId());
 //        response.setProductName(product.getProductName());
@@ -42,5 +42,17 @@ public class ProductServiceImpl implements ProductService {
 //        response.setQuantity(product.getQuantity());
         BeanUtils.copyProperties(product, response);
         return response;
+    }
+
+    @Override
+    public void reduceQuantity(long productId, long quantity) {
+        logger.info("Reduce quantity for product ID: "+ productId +" and quantity: "+quantity);
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product with given ID not found", "PRODUCT NOT FOUND"));
+        if(product.getQuantity()<quantity){
+            throw new ProductNotFoundException("Product does not have sufficient Quantity", "INSUFFICIENT QUANTITY");
+        }
+        product.setQuantity(product.getQuantity()-quantity);
+        productRepository.save(product);
+        logger.info("Product Updated Successfully");
     }
 }

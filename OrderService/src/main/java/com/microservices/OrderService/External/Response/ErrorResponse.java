@@ -1,4 +1,4 @@
-package com.microservices.ProductService.Model;
+package com.microservices.OrderService.External.Response;
 
 public class ErrorResponse {
     private String message;
